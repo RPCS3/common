@@ -2,7 +2,7 @@
 
 void sleep_queue_entry_t::add_entry()
 {
-	m_queue.emplace_back(std::static_pointer_cast<sleep_entry_t>(m_thread.shared_from_this()));
+	m_queue.emplace_back(m_thread.shared_sleep_entry());
 }
 
 void sleep_queue_entry_t::remove_entry()
