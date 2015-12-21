@@ -2,10 +2,12 @@
 #include <deque>
 #include <memory>
 
-struct sleep_entry_t : std::enable_shared_from_this<sleep_entry_t>
+struct sleep_entry_t : protected std::enable_shared_from_this<sleep_entry_t>
 {
 	virtual void sleep() = 0;
 	virtual void awake() = 0;
+
+	friend class sleep_queue_entry_t;
 };
 
 using sleep_queue_t = std::deque<std::shared_ptr<sleep_entry_t>>;

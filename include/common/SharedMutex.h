@@ -3,7 +3,7 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
-#include <Atomic.h>
+#include "Atomic.h"
 
 //! An attempt to create effective implementation of "shared mutex", lock-free in optimistic case.
 //! All locking and unlocking may be done by single LOCK XADD or LOCK CMPXCHG instructions.
