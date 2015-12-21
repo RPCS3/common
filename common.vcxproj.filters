@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{fbf072d9-045e-4ff5-ba9b-fe51ae712dfd}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{8a3f953c-4c72-4bdd-a327-e3f173447485}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\BEType.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BitField.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\config_context.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\convert.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\event.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\File.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GNU.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Interval.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Log.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MTRingbuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Semaphore.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SharedMutex.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SleepQueue.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\StrFmt.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Timer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VirtualMemory.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Atomic.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\config_context.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\File.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GNU.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Semaphore.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SharedMutex.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SleepQueue.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StrFmt.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VirtualMemory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
