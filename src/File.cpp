@@ -701,7 +701,11 @@ bool fs::dir::open(const std::string& dirname)
 {
 	this->close();
 
-	g_tls_error = fse::ok;
+#ifdef _WIN32
+	m_dd = -1;
+#else
+	m_dd = 0;
+#endif
 
 	if (!is_dir(dirname))
 	{
@@ -710,12 +714,6 @@ bool fs::dir::open(const std::string& dirname)
 
 	m_path.reset(new char[dirname.size() + 1]);
 	std::memcpy(m_path.get(), dirname.c_str(), dirname.size() + 1);
-
-#ifdef _WIN32
-	m_dd = -1;
-#else
-	m_dd = (std::intptr_t)::opendir(m_path.get());
-#endif
 
 	return true;
 }
@@ -733,8 +731,10 @@ bool fs::dir::close()
 
 #ifdef _WIN32
 	CHECK_ASSERTION(m_dd == -1 || FindClose((HANDLE)m_dd));
+	m_dd = -1;
 #else
 	CHECK_ASSERTION(!::closedir((DIR*)m_dd));
+	m_dd = 0;
 #endif
 
 	return true;
@@ -775,6 +775,16 @@ bool fs::dir::read(std::string& name, stat_t& info)
 	info.mtime = to_time(found.ftLastWriteTime);
 	info.ctime = to_time(found.ftCreationTime);
 #else
+	if (m_dd == 0)
+	{
+		m_dd = (std::intptr_t)::opendir(m_path.get());
+
+		if (m_dd == 0)
+		{
+			return false;
+		}
+	}
+
 	const auto found = ::readdir((DIR*)m_dd);
 
 	struct stat file_info;
@@ -795,6 +805,26 @@ bool fs::dir::read(std::string& name, stat_t& info)
 
 	return true;
 }
+
+bool fs::dir::first(std::string& name, stat_t& info)
+{
+#ifdef _WIN32
+	if (m_dd != -1)
+	{
+		CHECK_ASSERTION(FindClose((HANDLE)m_dd));
+		m_dd = -1;
+	}
+#else
+	if (m_dd != 0)
+	{
+		CHECK_ASSERTION(!::closedir((DIR*)m_dd));
+		m_dd = 0;
+	}
+#endif
+
+	return read(name, info);
+}
+
 
 std::string fs::get_config_dir()
 {
