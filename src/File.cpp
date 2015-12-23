@@ -3,6 +3,7 @@
 
 #ifdef _WIN32
 #define _WIN32_WINNT 0x0601
+#include <PathCch.h>
 #include <Windows.h>
 
 #define GET_API_ERROR static_cast<u64>(GetLastError())
@@ -101,6 +102,8 @@ static bool truncate_file(const std::string& file, u64 length)
 #include <sys/types.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <libgen.h>
+#include <string.h>
 #include <unistd.h>
 #if defined(__APPLE__) || defined(__FreeBSD__)
 #include <copyfile.h>
@@ -216,7 +219,7 @@ bool fs::create_dir(const std::string& dir)
 #ifdef _WIN32
 	if (!CreateDirectoryW(to_wchar(dir).get(), NULL))
 #else
-	if (mkdir(dir.c_str(), 0777))
+	if (mkdir(dir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH))
 #endif
 	{
 		LOG_WARNING(GENERAL, "Error creating directory '%s': 0x%llx", dir, GET_API_ERROR);
@@ -228,46 +231,20 @@ bool fs::create_dir(const std::string& dir)
 
 bool fs::create_path(const std::string& path)
 {
-	g_tls_error = fse::ok;
+#ifdef _WIN32
+	auto copy = to_wchar(path);
+	PathCchRemoveFileSpec(copy.get(), path.length() + 1);
+	std::wstring ws = copy.get();
+	std::string parent{ ws.begin(), ws.end() };
+#else
+	std::unique_ptr<char, decltype(std::free) *> copy{ strdup(path.c_str()), std::free };
+	std::string parent = dirname(copy.get());
+#endif
 
-	size_t start = 0;
+	if (!is_dir(parent) && !create_path(parent))
+		return false;
 
-	while (true)
-	{
-		// maybe it could be more optimal if goes from the end recursively
-		size_t pos = path.find_first_of("/\\", start);
-
-		if (pos == std::string::npos)
-		{
-			pos = path.length();
-		}
-
-		std::string dir = path.substr(0, pos);
-
-		start = ++pos;
-
-		if (dir.size() == 0)
-		{
-			continue;
-		}
-
-		if (!is_dir(dir))
-		{
-			// if doesn't exist or not a dir
-			if (!create_dir(dir))
-			{
-				// if creating failed
-				return false;
-			}
-		}
-
-		if (pos >= path.length())
-		{
-			break;
-		}
-	}
-
-	return true;
+	return create_dir(path);
 }
 
 bool fs::remove_dir(const std::string& dir)
@@ -845,10 +822,8 @@ std::string fs::get_config_dir()
 
 		dir += "/rpcs3/";
 
-		if (::mkdir(dir.c_str(), 0777) == -1 && errno != EEXIST)
-		{
+		if (!is_dir(dir) && !create_path(dir))
 			std::printf("Failed to create configuration directory '%s' (%d).\n", dir.c_str(), errno);
-		}
 
 		return dir;
 #endif
